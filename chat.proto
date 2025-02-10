@@ -1,0 +1,17 @@
+// chat.proto
+syntax = "proto3";
+
+package chat;
+option go_package = "./generated;chat";
+service ChatService {
+  rpc SendMessage (MessageRequest) returns (MessageResponse) {}
+}
+
+message MessageRequest {
+  string content = 1;
+}
+
+message MessageResponse {
+  string status = 1;
+  string timestamp = 2;
+}
