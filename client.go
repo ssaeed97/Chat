@@ -1,17 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"context"
+	"fmt"
 	"log"
+	"os"
 	"time"
 
-	pb "Chat/generated" // Use relative import path if in the same folder structure
+	pb "Chat/generated" // Make sure this matches your Go module path
 
 	"google.golang.org/grpc"
 )
 
 func main() {
-	// Connect to the Python server
+	// Establish a connection to the server
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -20,13 +23,45 @@ func main() {
 
 	c := pb.NewChatServiceClient(conn)
 
-	// Send message to the server
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	r, err := c.SendMessage(ctx, &pb.MessageRequest{Content: "Hello from Go client"})
+	// Create a stream
+	stream, err := c.SendMessage(context.Background())
 	if err != nil {
 		log.Fatalf("could not send message: %v", err)
 	}
-	log.Printf("Server response: Status: %s, Timestamp: %s", r.GetStatus(), r.GetTimestamp())
+
+	// Start a goroutine to receive messages from the server
+	go func() {
+		for {
+			resp, err := stream.Recv()
+			if err != nil {
+				log.Fatalf("could not receive message: %v", err)
+			}
+			fmt.Printf("\nServer response: Status: %s, Timestamp: %s\n", resp.GetStatus(), resp.GetTimestamp())
+		}
+	}()
+
+	// Continuously read input from the user and send messages
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Println("Type your message and press Enter (Type 'exit' to quit):")
+	for {
+		fmt.Print("Client: ")
+		scanner.Scan()
+		text := scanner.Text()
+
+		// Exit condition
+		if text == "exit" {
+			fmt.Println("Closing chat...")
+			stream.CloseSend()
+			break
+		}
+
+		// Send the message to the server
+		err := stream.Send(&pb.MessageRequest{Content: text})
+		if err != nil {
+			log.Fatalf("could not send message: %v", err)
+		}
+
+		// Add a small delay between messages to simulate typing delay
+		time.Sleep(1 * time.Second)
+	}
 }
