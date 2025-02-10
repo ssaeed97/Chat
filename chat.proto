@@ -4,7 +4,7 @@ syntax = "proto3";
 package chat;
 option go_package = "./generated;chat";
 service ChatService {
-  rpc SendMessage (MessageRequest) returns (MessageResponse) {}
+  rpc SendMessage (stream MessageRequest) returns (stream MessageResponse) {}
 }
 
 message MessageRequest {

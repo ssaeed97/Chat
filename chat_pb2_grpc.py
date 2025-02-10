@@ -34,7 +34,7 @@ class ChatServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SendMessage = channel.unary_unary(
+        self.SendMessage = channel.stream_stream(
                 '/chat.ChatService/SendMessage',
                 request_serializer=chat__pb2.MessageRequest.SerializeToString,
                 response_deserializer=chat__pb2.MessageResponse.FromString,
@@ -44,7 +44,7 @@ class ChatServiceStub(object):
 class ChatServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def SendMessage(self, request, context):
+    def SendMessage(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -53,7 +53,7 @@ class ChatServiceServicer(object):
 
 def add_ChatServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SendMessage': grpc.unary_unary_rpc_method_handler(
+            'SendMessage': grpc.stream_stream_rpc_method_handler(
                     servicer.SendMessage,
                     request_deserializer=chat__pb2.MessageRequest.FromString,
                     response_serializer=chat__pb2.MessageResponse.SerializeToString,
@@ -70,7 +70,7 @@ class ChatService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def SendMessage(request,
+    def SendMessage(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -80,8 +80,8 @@ class ChatService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
+        return grpc.experimental.stream_stream(
+            request_iterator,
             target,
             '/chat.ChatService/SendMessage',
             chat__pb2.MessageRequest.SerializeToString,

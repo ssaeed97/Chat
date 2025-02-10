@@ -5,12 +5,15 @@ import chat_pb2
 import chat_pb2_grpc
 
 class ChatServicer(chat_pb2_grpc.ChatServiceServicer):
-    def SendMessage(self, request, context):
-        print(f"Received message: {request.content}")
-        return chat_pb2.MessageResponse(
-            status="DELIVERED",
-            timestamp=time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
-        )
+    def SendMessage(self, request_iterator, context):
+        for request in request_iterator:
+            print(f"Received message from client: {request.content}")
+            # Simulate server response and send it back to client
+            server_response = chat_pb2.MessageResponse(
+                status="RECEIVED",
+                timestamp=time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+            )
+            yield server_response
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
