@@ -55,7 +55,7 @@ func main() {
 			break
 		}
 
-		// Send the message
+		// Send the message to the server
 		err := stream.Send(&pb.MessageRequest{Content: text})
 		if err != nil {
 			log.Fatalf("could not send message: %v", err)

@@ -3,15 +3,21 @@ from concurrent import futures
 import time
 import chat_pb2
 import chat_pb2_grpc
+import threading
+import sys
 
 class ChatServicer(chat_pb2_grpc.ChatServiceServicer):
     def SendMessage(self, request_iterator, context):
         for request in request_iterator:
             print(f"Received message from client: {request.content}")
-            # Simulate server response and send it back to client
+            
+            # Allow the server operator to type a response
+            response_content = input("Server: Type your response: ")
+
+            # Send the typed response back to the client
             server_response = chat_pb2.MessageResponse(
-                status="RECEIVED",
-                timestamp=time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+                status="RESPONSE FROM SERVER",
+                timestamp=time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()) + f" - {response_content}"
             )
             yield server_response
 
