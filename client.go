@@ -36,7 +36,7 @@ func main() {
 			if err != nil {
 				log.Fatalf("could not receive message: %v", err)
 			}
-			fmt.Printf("Server response: Status: %s, Timestamp: %s\n", resp.GetStatus(), resp.GetTimestamp())
+			fmt.Printf("\nServer response: Status: %s, Timestamp: %s\n", resp.GetStatus(), resp.GetTimestamp())
 		}
 	}()
 
@@ -61,7 +61,7 @@ func main() {
 			log.Fatalf("could not send message: %v", err)
 		}
 
-		// Add a small delay between messages
+		// Add a small delay between messages to simulate typing delay
 		time.Sleep(1 * time.Second)
 	}
 }
