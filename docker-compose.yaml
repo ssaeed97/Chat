@@ -1,0 +1,14 @@
+services:
+  python-server:
+    image: sufyaansaeed/python-server
+    ports:
+      - "50051:50051"
+    container_name: python-server
+
+  go-client:
+    image: sufyaansaeed/go-client
+    depends_on:
+      - python-server
+    container_name: go-client
+    stdin_open: true
+    tty: true
