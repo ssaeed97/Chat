@@ -11,7 +11,7 @@ class ChatServicer(chat_pb2_grpc.ChatServiceServicer):
             print(f"Received message from client: {request.content}")
 
             # Simulate typing a response interactively on the server side
-            response_content = input("Server: Type your response: ")
+            response_content = input("Server: Type your response: ") or "Please wait for a response"
 
             # Send the typed response back to the client immediately
             server_response = chat_pb2.MessageResponse(

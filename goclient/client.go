@@ -8,13 +8,14 @@ import (
 	"os"
 	"time"
 
-	pb "Chat/generated" // Make sure this matches your Go module path
+	pb "Chat/goclient/generated" // Make sure this matches your Go module path
 
 	"google.golang.org/grpc"
 )
 
 func main() {
 	// Establish a connection to the server
+	//conn, err := grpc.Dial("python-server:50051", grpc.WithInsecure())
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -36,7 +37,7 @@ func main() {
 			if err != nil {
 				log.Fatalf("could not receive message: %v", err)
 			}
-			fmt.Printf("\nServer response: Status: %s, Timestamp: %s\n", resp.GetStatus(), resp.GetTimestamp())
+			fmt.Printf("\nServer response: Status: %s\n, Timestamp: %s\n\n", resp.GetStatus(), resp.GetTimestamp())
 		}
 	}()
 
