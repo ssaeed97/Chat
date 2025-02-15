@@ -14,8 +14,7 @@ COPY . /app
 RUN pip install -r requirements.txt
 
 # Generate the gRPC stubs from the proto file
-RUN python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. chat.proto
-
+RUN python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. chat.proto 
 
 # Expose the port the server will run on
 EXPOSE 50051
