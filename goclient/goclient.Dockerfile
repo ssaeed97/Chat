@@ -38,4 +38,4 @@ RUN protoc --go_out=./goclient --go-grpc_out=./goclient goclient/chat.proto
 EXPOSE 50051
 
 # Command to run the Go client
-CMD ["go", "run", "client.go"]
+CMD ["go", "run", "./goclient/client.go"]

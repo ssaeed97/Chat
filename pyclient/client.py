@@ -5,8 +5,8 @@ import chat_pb2_grpc
 
 def run():
     # Establish connection to the server
+    channel = grpc.insecure_channel('localhost:50051')
     #channel = grpc.insecure_channel('python-server:50051')
-    channel = grpc.insecure_channel('python-server:50051')
     stub = chat_pb2_grpc.ChatServiceStub(channel)
 
     # Create a stream

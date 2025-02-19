@@ -16,9 +16,14 @@ import (
 func main() {
 	// Establish a connection to the server
 	//conn, err := grpc.Dial("python-server:50051", grpc.WithInsecure())
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	serverAddr := os.Getenv("SERVER_ADDR")
+	if serverAddr == "" {
+		serverAddr = "localhost:50051" // fallback if not set
+	}
+
+	conn, err := grpc.Dial(serverAddr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatalf("Failed to connect: %v", err)
 	}
 	defer conn.Close()
 

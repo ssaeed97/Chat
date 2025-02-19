@@ -1,41 +1,37 @@
-# Go client Dockerfile
+# Dockerfile (in the goserver folder)
 
-# Use the official Golang image as a base
-FROM golang:1.23-bookworm
+# 1) Build stage
+FROM golang:1.23 AS builder
 
-# Set the working directory inside the container
+# Create a working directory
 WORKDIR /app
 
-# Copy the Go files into the container
-COPY . /app
+# Copy module files first
+COPY go.mod go.sum ./
+RUN go mod download
 
-# Install necessary dependencies
-#RUN go mod init Chat - Causing errors
-#RUN go install google.golang.org/grpc
-#RUN go install google.golang.org/protobuf
-#RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-#RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-#RUN export PATH="$PATH:$(go env GOPATH)/bin"
-#RUN go mod tidy
+# Copy the entire project into /app
+COPY . .
 
-# Install necessary dependencies for protobuf-compiler and Go plugins
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    protobuf-compiler \
-    && rm -rf /var/lib/apt/lists/*  # Clean up to reduce image size
+# Switch to the directory where server.go actually lives (goserver/ not server/)
+WORKDIR /app/goserver
 
-# Install Go tools for generating gRPC code (use specific versions)
-RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0 \
-    && go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
+# Build the server binary as a static binary
+RUN CGO_ENABLED=0 go build -o server .
 
+# 2) Final stage
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
 
-# Ensure that Go binaries are in the PATH
-RUN export PATH="$PATH:$(go env GOPATH)/bin"
+# Copy the binary from the builder stage into the final image
+COPY --from=builder /app/goserver/server . 
 
-# Generate Go stubs from the .proto file
-RUN protoc --go_out=./goserver --go-grpc_out=./goserver goserver/chat.proto
+# Ensure the binary has execute permissions
+RUN chmod +x ./server
 
-# Expose the port the Go client will communicate through
+# Expose the gRPC port
 EXPOSE 50051
 
-# Command to run the Go client
-CMD ["go", "run", "client.go"]
+# Run the server
+CMD ["./server"]
