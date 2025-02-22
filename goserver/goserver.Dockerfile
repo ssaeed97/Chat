@@ -32,10 +32,10 @@ RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0 \
 RUN export PATH="$PATH:$(go env GOPATH)/bin"
 
 # Generate Go stubs from the .proto file
-RUN protoc --go_out=./goserver --go-grpc_out=./goserver goserver/chat.proto
+RUN protoc --go_out=./generated --go-grpc_out=./generated chat.proto
 
 # Expose the port the Go client will communicate through
 EXPOSE 50051
 
 # Command to run the Go client
-CMD ["go", "run", "client.go"]
+CMD ["go", "run", "server.go"]

@@ -8,15 +8,15 @@ import (
 	"os"
 	"time"
 
-	pb "Chat/goclient/generated" // Make sure this matches your Go module path
+	pb "goclient/generated" // Make sure this matches your Go module path
 
 	"google.golang.org/grpc"
 )
 
 func main() {
 	// Establish a connection to the server
-	//conn, err := grpc.Dial("python-server:50051", grpc.WithInsecure())
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("server:50051", grpc.WithInsecure()) //used with docker run
+	//conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure()) //Used with local run
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

@@ -14,8 +14,13 @@ after building images using these commands:
 PyServer:
 '''docker buildx build --platform linux/amd64,linux/arm64 -t sufyaansaeed/python-server --push -f pyserver.Dockerfile .'''
 
-PyClient: 
+GoClient:
+'''docker buildx build --platform linux/amd64,linux/arm64 -t sufyaansaeed/go-client --push -f goclient.Dockerfile .'''
 
+GoServer:
+'''docker buildx build --platform linux/amd64,linux/arm64 -t sufyaansaeed/go-server --push .'''
+
+PyClient: 
 '''docker buildx build --platform linux/amd64,linux/arm64 -t sufyaansaeed/python-client --push -f pyclient.Dockerfile .'''
 
 After Image creation docker network needs to be created:
@@ -24,13 +29,18 @@ After Image creation docker network needs to be created:
 After network creation, you can now run the python server and client with specific commands
 
 PyServer(This command opens the container server terminal):
-'''docker run -it --name python-server --network chat-network -p 50051:50051 sufyaansaeed/python-server /bin/bash'''
+'''docker run -it --name server --network chat-network -p 50051:50051 sufyaansaeed/python-server'''
 
-Within this terminal you will explicitly have to start the python server with:
-'''python3 server.py'''
+GoClient:
+'''docker run -it --name go-client --network chat-network sufyaansaeed/go-client'''
 
-To start the PyClient within same network:
-'''docker run -it --name python-client --network chat-network sufyaansaeed/python-client'''
+GoServer:
+'''docker run -it --name server --network chat-network -p 50051:50051 sufyaansaeed/go-server '''
+
+PythonServer:
+'''docker run -it --name python-client --network chat-network sufyaansaeed/python-client'''\
+
+
 
 Make sure no prio images exist prior to creating and running servers using:
 '''docker rm python-server'''
