@@ -29,7 +29,7 @@ After Image creation docker network needs to be created:
 After network creation, you can now run the python server and client with specific commands
 
 PyServer(This command opens the container server terminal):
-'''docker run -it --name python-server --network chat-network -p 50051:50051 sufyaansaeed/python-server'''
+'''docker run -it --name server --network chat-network -p 50051:50051 sufyaansaeed/python-server'''
 
 GoClient:
 '''docker run -it --name go-client --network chat-network sufyaansaeed/go-client'''
