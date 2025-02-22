@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	pb "Chat/goserver/generated" // Make sure this matches your Go module path
+	pb "goserver/generated" // Make sure this matches your Go module path
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
